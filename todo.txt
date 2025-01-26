@@ -1,0 +1,1 @@
+Rn, we completely reset the tasks array in persistant storage every time there's an edit in the tasks array. Gotta fix that to only edit it.
