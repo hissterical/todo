@@ -4,8 +4,8 @@ import { StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Import icons
 
 // Import your screens
-import Index from '../pages/Index';  // Task screen
-import MainPage from '../pages/MainPage';  // Main screen
+import Index from './pages/TasksPage';  // Task screen
+import MainPage from './pages/MainPage';  // Main screen
 
 // Create the bottom tab navigator
 const Tab = createBottomTabNavigator();
