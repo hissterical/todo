@@ -6,6 +6,11 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  ExpoSpeechRecognitionModule,
+  useSpeechRecognitionEvent,
+} from "expo-speech-recognition";
+import { ScrollView } from "react-native-gesture-handler";
 import Task from "../types/TaskTypes"; // Default import
 
 interface JsonTask {
@@ -54,6 +59,43 @@ export default function MainPage() {
   const [userMsg, setUserMsg] = useState<string>("");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [llmMessage, setLlmMessage] = useState<string>("");
+  const [recognizing, setRecognizing] = useState(false);
+  const [transcript, setTranscript] = useState("");
+
+  useSpeechRecognitionEvent("start", () => setRecognizing(true));
+  useSpeechRecognitionEvent("end", () => {
+    setRecognizing(false);
+    handleSTTComplete();
+  });
+  useSpeechRecognitionEvent("result", (event) => {
+    setTranscript(event.results[0]?.transcript);
+  });
+  useSpeechRecognitionEvent("error", (event) => {
+    console.log("GOT ERRORU", event.error);
+  });
+
+  const handleStart = async () => {
+    const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+    if (!result.granted) {
+      console.log("Permission not granted", result);
+      return;
+    }
+
+    ExpoSpeechRecognitionModule.start({
+      lang: "en-US",
+      interimResults: true,
+      maxAlternatives: 1,
+      continuous: false, // End the session after a single recognition
+      requiresOnDeviceRecognition: false,
+      addsPunctuation: true, // Optional: Adds punctuation to the transcript
+    });
+  };
+  const handleSTTComplete = () => {
+    if (transcript.trim()) {
+      run(transcript);
+      setTranscript("");
+    }
+  };
 
   useEffect(() => {
     const loadTasks = async () => {
@@ -120,6 +162,20 @@ export default function MainPage() {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Welcome to the GAY Page!</Text>
+      <Button
+        title={!recognizing ? "Start" : "Stop"}
+        onPress={() => {
+          if (!recognizing) {
+            handleStart();
+          } else {
+            ExpoSpeechRecognitionModule.stop();
+          }
+        }}
+      />
+
+      <ScrollView>
+        <Text>{transcript}</Text>
+      </ScrollView>
       <TextInput
         style={styles.input}
         value={userMsg}
