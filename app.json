@@ -1,5 +1,8 @@
 {
   "expo": {
+    "permissions": [
+      "RECORD_AUDIO"
+    ],
     "name": "todo",
     "slug": "todo",
     "version": "1.0.0",

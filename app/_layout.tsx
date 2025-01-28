@@ -1,22 +1,23 @@
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StatusBar } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Import icons
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { StatusBar } from "react-native";
+import { Ionicons } from "@expo/vector-icons"; // Import icons
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Import your screens
-import Index from './pages/TasksPage';  // Task screen
-import MainPage from './pages/MainPage';  // Main screen
+import Index from "./pages/TasksPage"; // Task screen
+import MainPage from "./pages/MainPage"; // Main screen
 
 // Create the bottom tab navigator
 const Tab = createBottomTabNavigator();
 
 export default function Layout() {
   return (
-    <>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar barStyle="dark-content" />
       <Tab.Navigator
         screenOptions={{
-          headerShown: false,  // Optionally hide the header
+          headerShown: false, // Optionally hide the header
         }}
       >
         {/* Define the tabs/screens with icons */}
@@ -34,11 +35,15 @@ export default function Layout() {
           component={Index}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="checkmark-circle-outline" size={size} color={color} />
+              <Ionicons
+                name="checkmark-circle-outline"
+                size={size}
+                color={color}
+              />
             ),
           }}
         />
       </Tab.Navigator>
-    </>
+    </GestureHandlerRootView>
   );
 }

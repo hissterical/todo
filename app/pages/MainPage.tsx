@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Button, StyleSheet, TextInput, Alert } from "react-native";
+import { View, Text, Button, StyleSheet, TextInput, Alert, Linking } from "react-native";
 import {
   GoogleGenerativeAI,
   HarmCategory,
@@ -76,18 +76,39 @@ export default function MainPage() {
 
   const handleStart = async () => {
     const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
+  
     if (!result.granted) {
-      console.log("Permission not granted", result);
+      if (result.canAskAgain) {
+        Alert.alert(
+          "Permission Required",
+          "We need access to the microphone to use speech recognition."
+        );
+      } else {
+        Alert.alert(
+          "Permission Denied",
+          "Microphone access has been denied. Please enable it in your device settings.",
+          [
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+            {
+              text: "Open Settings",
+              onPress: () => Linking.openSettings(),
+            },
+          ]
+        );
+      }
       return;
     }
-
+  
     ExpoSpeechRecognitionModule.start({
       lang: "en-US",
       interimResults: true,
       maxAlternatives: 1,
-      continuous: false, // End the session after a single recognition
+      continuous: false, // End session after a single recognition
       requiresOnDeviceRecognition: false,
-      addsPunctuation: true, // Optional: Adds punctuation to the transcript
+      addsPunctuation: true, // Adds punctuation to the transcript
     });
   };
   const handleSTTComplete = () => {
