@@ -1,4 +1,1 @@
-Rn, we completely reset the tasks array in persistant storage every time there's an edit in the tasks array. Gotta fix that to only edit it.
-gemini key stored in expo public variable, gotta change that somehow. 
-lot of redundancy in code. have to fix that
-and variable names too man ugh
+groundup: 
